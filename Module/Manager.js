@@ -9,11 +9,18 @@ const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Mikasuru/KukuriClient/
 const REQUIRED_FILES = [
     'Commands/AFK.js',
     'Commands/Avatar.js',
+    'Commands/Calculate.js',
+    'Commands/Clean.js',
+    'Commands/FakeYoutube.js',
     'Commands/Help.js',
     'Commands/Ping.js',
+    'Commands/Poll.js',
+    'Commands/Purge.js',
+    'Commands/RPC.js',
     'Commands/SampleEmbed.js',
     'Commands/ServerInfo.js',
     'Commands/UserInfo.js',
+    'Commands/VoiceMessage.js',
     'Config/Client.json',
     'Config/Settings.json',
     'Config/Token.json',
@@ -31,7 +38,7 @@ async function downloadFile(filePath) {
         fs.writeFileSync(localPath, response.data);
         Logger('SUCCESS', `Downloading ${filePath} successfully!`);
     } catch (error) {
-        Logger('ERROR', `Couldn't download ${filePath}: ${error.message}`);
+        Logger('ERROR', `Couldn't download ${filePath}: ${error.message}. Make sure to crate the folder first!`);
     }
 }
 
