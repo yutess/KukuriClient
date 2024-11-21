@@ -1,6 +1,9 @@
 # Kukuri Client
 A free and open-source Discord selfbot with powerful features.
 
+# NOTED
+I will update Kukuri Client Tomorrow (At 11/22/24)
+
 ## What is Kukuri Client?
 Kukuri Client is a selfbot I created after noticing that many users purchase selfbots with a lot of useless commands. Kukuri Client is different. It's free, open-source, and focuses on providing only the most useful features you need. Don't worry, Kukuri Client won't betray you!
 
