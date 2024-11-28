@@ -1,8 +1,5 @@
 # Kukuri Client
-A free and open-source Discord selfbot with powerful features.
-
-# NOTED
-I will update Kukuri Client Tomorrow (At 11/22/24)
+A free and open-source Discord selfbot with powerful features and control via Web Panel.
 
 ## What is Kukuri Client?
 Kukuri Client is a selfbot I created after noticing that many users purchase selfbots with a lot of useless commands. Kukuri Client is different. It's free, open-source, and focuses on providing only the most useful features you need. Don't worry, Kukuri Client won't betray you!
@@ -10,10 +7,10 @@ Kukuri Client is a selfbot I created after noticing that many users purchase sel
 I've seen that many people want to try selfbots, but unfortunately, many of them have fallen victim to hacking by using free programs. That's why Kukuri Client is here!
 
 ## To-Do List
-- [ ] Web Control (Next.js): Add the ability to control the selfbot through a web interface built with Next.js (or potentially a UI).
-- [ ] Improved Code Readability: Make the code cleaner and easier to understand.
-- [ ] More Useful Commands: Continuously add new commands that provide genuine value to users.
-- [ ] Example Usage: Provide examples of how to use the bot effectively.
+- [X] **Web Control**: Add the ability to control the selfbot through a web interface built with Next.js (or potentially a UI).
+- [X] **Improved Code Readability**: Make the code cleaner and easier to understand.
+- [ ] **More Useful Commands**: Continuously add new commands that provide genuine value to users.
+- [ ] **Example Usage**: Provide examples of how to use the bot effectively.
 
 ## Replit User
 https://replit.com/@Mikasuru/KukuriClient
