@@ -1,3 +1,4 @@
+<h1 align="center">UNSTABLE CODE FOR NOW!!!</h1>
 <h1 align="center">Kukuri Client</h1>
 <p align="center">
   <i>A free and open-source Discord selfbot with powerful features and control via Web Panel.</i>
