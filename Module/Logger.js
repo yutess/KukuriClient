@@ -1,67 +1,109 @@
-const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
 
-const colors = {
-  RESET: "\x1b[0m",
-  RED: "\x1b[31m",
-  GREEN: "\x1b[32m",
-  YELLOW: "\x1b[33m",
-  BLUE: "\x1b[34m",
-  MAGENTA: "\x1b[35m",
-  CYAN: "\x1b[36m",
-};
+class Logger {
+    static instance = null;
+    #logFile = null;
+    #savingLogs = true;
+    
+    constructor() {
+        this.colors = {
+            reset: "\x1b[0m",
+            cyan: "\x1b[36m",    // INFO
+            yellow: "\x1b[33m",  // WARNING
+            red: "\x1b[31m",     // EXPECTION
+            green: "\x1b[32m",   // DEBUG
+            magenta: "\x1b[35m"  // LOAD
+        };
+        
+        if (this.#savingLogs) {
+            this.initializeLogFile();
+        }
+    }
 
-const icons = {
-  INFO: "❇️",
-  SUCCESS: "✅",
-  WARNING: "⚠️",
-  ERROR: "❌",
-  DEBUG: "🔍",
-};
+    static getInstance() {
+        if (!Logger.instance) {
+            Logger.instance = new Logger();
+        }
+        return Logger.instance;
+    }
 
-function Logger(type, message) {
-  let color, icon;
+    initializeLogFile() {
+        // Create Logs directory if it doesn't exist
+        if (!fs.existsSync('Logs')) {
+            fs.mkdirSync('Logs');
+        }
 
-  switch (type.toUpperCase()) {
-    case "INFO":
-      color = colors.BLUE;
-      icon = icons.INFO;
-      break;
-    case "SUCCESS":
-      color = colors.GREEN;
-      icon = icons.SUCCESS;
-      break;
-    case "WARNING":
-      color = colors.YELLOW;
-      icon = icons.WARNING;
-      break;
-    case "ERROR":
-      color = colors.RED;
-      icon = icons.ERROR;
-      break;
-    case "DEBUG":
-      color = colors.MAGENTA;
-      icon = icons.DEBUG;
-      break;
-    default:
-      color = colors.RESET;
-      icon = "";
-  }
+        const now = new Date();
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
 
-  console.log(`${color}[${type.toUpperCase()}] ${icon} : ${message}${colors.RESET}`);
+        const filename = path.join('Logs', `Log_${now.getDate()}-${months[now.getMonth()]}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}.kukuri`);
+        this.#logFile = fs.createWriteStream(filename, { flags: 'a' });
+    }
+
+    getLevelString(level) {
+        return {
+            'INFO': 'INFO',
+            'WARNING': 'WARNING',
+            'EXPECTION': 'EXPECTION',
+            'DEBUG': 'DEBUG',
+            'LOAD': 'LOAD'
+        }[level] || 'UNKNOWN';
+    }
+
+    getConsoleColor(level) {
+        return {
+            'INFO': this.colors.cyan,
+            'WARNING': this.colors.yellow,
+            'EXPECTION': this.colors.red,
+            'DEBUG': this.colors.green,
+            'LOAD': this.colors.magenta
+        }[level] || this.colors.reset;
+    }
+
+    getCurrentDateTime() {
+        const now = new Date();
+        return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    }
+
+    log(level, message) {
+        const levelStr = this.getLevelString(level);
+        const timeStr = this.getCurrentDateTime();
+        const logMessage = `[${levelStr}] (${timeStr}): ${message}\n`;
+
+        // Console output with color
+        const color = this.getConsoleColor(level);
+        process.stdout.write(`${color}[${levelStr}]${this.colors.reset} (${timeStr}): ${message}\n`);
+
+        // Save to file if enabled
+        if (this.#savingLogs && this.#logFile) {
+            this.#logFile.write(logMessage);
+        }
+    }
+
+    static info(message) {
+        Logger.getInstance().log('INFO', message);
+    }
+
+    static warning(message) {
+        Logger.getInstance().log('WARNING', message);
+    }
+
+    static expection(message) {
+        Logger.getInstance().log('EXPECTION', message);
+    }
+
+    static debug(message) {
+        Logger.getInstance().log('DEBUG', message);
+    }
+
+    static load(message) {
+        Logger.getInstance().log('LOAD', message);
+    }
 }
 
-function Prompt(question) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
-  return new Promise(resolve => {
-    rl.question(`${colors.RED}${question}${colors.RESET}`, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-}
-
-module.exports = { Logger, Prompt };
+// Export the class directly
+module.exports = Logger;

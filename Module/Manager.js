@@ -1,79 +1,137 @@
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
-const notifier = require('node-notifier');
+const Logger = require('./Logger');
 
-const { Logger } = require('./Logger');
-
-const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Mikasuru/KukuriClient/main/';
-const REQUIRED_FILES = [
-    'Commands/AFK.js',
-    'Commands/Avatar.js',
-    'Commands/Calculate.js',
-    'Commands/Clean.js',
-    'Commands/FakeYoutube.js',
-    'Commands/Help.js',
-    'Commands/Ping.js',
-    'Commands/Poll.js',
-    'Commands/Purge.js',
-    'Commands/RPC.js',
-    'Commands/SampleEmbed.js',
-    'Commands/ServerInfo.js',
-    'Commands/UserInfo.js',
-    'Commands/VoiceMessage.js',
-    'Config/Client.json',
-    'Config/Settings.json',
-    'Config/Token.json',
-    'Module/Logger.js',
-    'Module/Manager.js',
-    'Main.js'
-];
-
-async function downloadFile(filePath) {
-    const url = GITHUB_RAW_URL + filePath;
-    const localPath = path.join(__dirname, '..', filePath);
-
-    try {
-        const response = await axios.get(url);
-        fs.writeFileSync(localPath, response.data);
-        Logger('SUCCESS', `Downloading ${filePath} successfully!`);
-    } catch (error) {
-        Logger('ERROR', `Couldn't download ${filePath}: ${error.message}. Make sure to crate the folder first!`);
-    }
-}
-
-async function checkMissingFiles() {
-    Logger('INFO', 'Checking all missing files...');
-
-    for (const file of REQUIRED_FILES) {
-        const filePath = path.join(__dirname, '..', file);
-        if (!fs.existsSync(filePath)) {
-            Logger('WARNING', `${file} is Missing! Attemping to download...`);
-            await downloadFile(file);
+class ConfigManager {
+    constructor() {
+        this.configPath = path.join(process.cwd(), 'Config');
+        this.configFiles = {
+            settings: path.join(this.configPath, 'Settings.json'),
+            token: path.join(this.configPath, 'Token.json'),
+            client: path.join(this.configPath, 'Client.json')
+        };
+        
+        // Create Config directory if it doesn't exist
+        if (!fs.existsSync(this.configPath)) {
+            fs.mkdirSync(this.configPath);
         }
     }
 
-    notifier.notify({
-        title: 'Kukuri Client',
-        message: `Checking completed!`,
-        sound: true,
-        wait: false
-      });
-    Logger('SUCCESS', 'The service is finished! Attemping to run Main.js');
-}
+    getDefaultConfigs() {
+        return {
+            settings: {
+                notification: false,
+                prefix: '.',
+                webhook: ''
+            },
+            token: {
+                token: ''
+            },
+            client: {
+                afk: false,
+                afkKeywords: [
+                    "What's up? I'm afk, Will be back soon!",
+                    "This is an auto message, I'm currently afk.",
+                    "Wait a min, I'm afk",
+                    "What, wait a sec",
+                    "yo wait I'm afk dude",
+                    "this is an auto msg, I'm afk",
+                    "afk"
+                ]
+            }
+        };
+    }
 
-async function runMain() {
-    try {
-        Logger('INFO', 'Starting Main.js');
-        require('../Main.js');
-    } catch (error) {
-        Logger('ERROR', `Error while starting Main.js: ${error.message}`);
+    loadConfig(type) {
+        try {
+            if (!this.configFiles[type]) {
+                throw new Error(`Unknown config type: ${type}`);
+            }
+
+            if (!fs.existsSync(this.configFiles[type])) {
+                Logger.info(`${type} config not found, creating with default values...`);
+                this.saveConfig(type, this.getDefaultConfigs()[type]);
+                return this.getDefaultConfigs()[type];
+            }
+
+            const config = JSON.parse(fs.readFileSync(this.configFiles[type], 'utf8'));
+            return config;
+        } catch (error) {
+            Logger.expection(`Failed to load ${type} config: ${error.message}`);
+            return null;
+        }
+    }
+
+    saveConfig(type, data) {
+        try {
+            if (!this.configFiles[type]) {
+                throw new Error(`Unknown config type: ${type}`);
+            }
+
+            fs.writeFileSync(this.configFiles[type], JSON.stringify(data, null, 2));
+            Logger.load(`Saved ${type} config successfully`);
+            return true;
+        } catch (error) {
+            Logger.expection(`Failed to save ${type} config: ${error.message}`);
+            return false;
+        }
+    }
+
+    updateConfig(type, updates) {
+        try {
+            const currentConfig = this.loadConfig(type);
+            if (!currentConfig) {
+                throw new Error(`Failed to load current ${type} config`);
+            }
+
+            const updatedConfig = { ...currentConfig, ...updates };
+            return this.saveConfig(type, updatedConfig);
+        } catch (error) {
+            Logger.expection(`Failed to update ${type} config: ${error.message}`);
+            return false;
+        }
+    }
+
+    validateConfigs() {
+        try {
+            const requiredConfigs = ['settings', 'token', 'client'];
+            const missingConfigs = [];
+
+            for (const type of requiredConfigs) {
+                const config = this.loadConfig(type);
+                if (!config) {
+                    missingConfigs.push(type);
+                }
+            }
+
+            if (missingConfigs.length > 0) {
+                Logger.warning(`Missing config files: ${missingConfigs.join(', ')}`);
+                return false;
+            }
+
+            Logger.load('All config files are valid');
+            return true;
+        } catch (error) {
+            Logger.expection(`Config validation failed: ${error.message}`);
+            return false;
+        }
+    }
+
+    resetConfig(type) {
+        try {
+            if (!this.configFiles[type]) {
+                throw new Error(`Unknown config type: ${type}`);
+            }
+
+            const defaultConfig = this.getDefaultConfigs()[type];
+            return this.saveConfig(type, defaultConfig);
+        } catch (error) {
+            Logger.expection(`Failed to reset ${type} config: ${error.message}`);
+            return false;
+        }
     }
 }
 
-async function Manager() {
-    await checkMissingFiles();
-    await runMain();
-}
-
-module.exports = { Manager };
+module.exports = {
+    ConfigManager
+};
