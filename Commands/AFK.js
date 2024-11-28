@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { WebhookClient } = require('discord.js-selfbot-v13');
+const Logger = require('./Module/Logger');
 
 let User = require("../Config/Client.json");
 const Settings = require("../Config/Settings.json");
@@ -40,7 +41,7 @@ async function handle(message) {
                 content: `@everyone AFK Logs (Type: ${message.channel.type === 'DM' ? 'DM' : message.channel.name})\n\`\`\`\nUser: ${message.author.tag}\nMessage: ${message.content}\nResponse: ${randomKeyword}\`\`\``
             });
         } catch (error) {
-            console.error('Failed to send webhook:', error);
+            Logger.expection('Failed to send webhook:', error);
         }
     }
 }

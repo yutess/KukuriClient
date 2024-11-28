@@ -1,5 +1,6 @@
 const { WebEmbed } = require('discord.js-selfbot-v13');
 const notifier = require('node-notifier');
+const Logger = require('./Module/Logger');
 
 module.exports = {
     name: 'clean',
@@ -64,7 +65,7 @@ module.exports = {
                 message.channel.send('Operation cancelled.');
             }
         } catch (error) {
-            console.error('Error in delete command:', error);
+            Logger.expection('Error in delete command:', error);
             message.channel.send('An error occurred while trying to delete messages.');
         }
     },

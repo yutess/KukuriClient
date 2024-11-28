@@ -1,4 +1,5 @@
 const { MessagePoll } = require('discord.js-selfbot-v13');
+const Logger = require('./Module/Logger');
 
 module.exports = {
     name: 'poll', // example: .poll "Message with the space" "One" "Question Two" "And the question three!"
@@ -46,7 +47,7 @@ module.exports = {
                 message.channel.send('The poll has ended. Check the results above!');
             }, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
         } catch (error) {
-            console.error('Error creating poll:', error);
+            Logger.expection('Error creating poll:', error);
             message.reply('An error occurred while creating the poll. Please try again later.');
         }
     },

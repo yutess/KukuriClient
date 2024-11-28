@@ -1,6 +1,7 @@
 const { MessageAttachment } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const path = require('path');
+const Logger = require('./Module/Logger');
 
 module.exports = {
     name: 'voicemsg', // example: .voicemsg C:\Users\<user>\Downloads\<voice>.mp3
@@ -37,7 +38,7 @@ module.exports = {
 
             message.reply('Voice message sent successfully!');
         } catch (error) {
-            console.error('Error sending voice message:', error);
+            Logger.expection('Error sending voice message:', error);
             message.reply('An error occurred while sending the voice message. Please try again.');
         }
     },
