@@ -10,6 +10,14 @@
 
 ---
 
+<h2 align="center">✨Community</h2>
+<p align="center">
+  Hey! I've create a Community server, Feel free to join! <br />
+  <a href="https://discord.gg/bxMjzEXgZR">Kukuri Client | Community</a>
+</p>
+
+---
+
 <h2>🚀 What is Kukuri Client?</h2>
 <p>
   Kukuri Client is a selfbot I created after noticing that many users purchase selfbots with a lot of useless commands. 
@@ -26,11 +34,16 @@
 
 <h2>📝 To-Do List</h2>
 <ul>
-  <li><strong>✅ Web Control</strong>: Add the ability to control the selfbot through a web interface built with Next.js (or potentially a UI).</li>
+  <li><strong>✅ Web Control</strong>: Implement the ability to control the selfbot through a web interface built with Next.js (or potentially another UI).</li>
   <li><strong>✅ Improved Code Readability</strong>: Make the code cleaner and easier to understand.</li>
   <li><strong>🔲 More Useful Commands</strong>: Continuously add new commands that provide genuine value to users.</li>
-  <li><strong>🔲 Example Usage</strong>: Provide examples of how to use the bot effectively.</li>
+  <li><strong>🔲 Example Usage</strong>: Provide examples and tutorials for using the bot effectively.</li>
+  <li><strong>🔲 Notifications</strong>: Improve the notification system to make it more useful and customizable.</li>
+  <li><strong>🔲 Rich Presence</strong>: Allow users to customize Rich Presence through the Web Panel.</li>
+  <li><strong>🔲 Reminders</strong>: Enable users to set reminders via the website, which will notify them at the specified time.</li>
 </ul>
+<br />
+<h3 align="center"><strong>⚙️</strong> You can track my development progress and to-do list in the Discord server!</h3>
 
 ---
 
@@ -71,4 +84,4 @@ Please enter your user token: TOKEN HERE
 <p>I welcome contributions to improve Kukuri Client!<br />However, all contributions must undergo a review process before being merged.</p>
 
 <h2>💖 Supporting</h2>
-<p>You can support the development of Kukuri Client by:</p> <ul> <li>Subscribing to my channel: <a href="https://www.youtube.com/@kukuri_xyz">my channel</a></li> <li>Starring this repository</li> </ul>
+<p>You can support the development of Kukuri Client by:</p> <ul> <li>Subscribing to my channel: <a href="https://www.youtube.com/@kukuri_xyz">My channel</a></li> <li>Starring this repository</li> </ul>
