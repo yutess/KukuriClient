@@ -1,7 +1,0 @@
-{
-    "General": ["help", "ping", "info"],
-    "Moderation": ["clean"],
-    "Utility": ["avatar", "serverinfo", "userinfo"],
-    "Fun": ["poll", "fakeyt", "rpc"],
-    "Other": []
-  }
