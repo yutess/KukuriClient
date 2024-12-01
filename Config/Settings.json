@@ -1,5 +1,5 @@
 {
-  "notification": true,
+  "notification": false,
   "prefix": ".",
-  "webhook": "https://discord.com/api/webhooks/xxx/xxx"
+  "webhook": ""
 }
