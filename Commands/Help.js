@@ -6,12 +6,18 @@ module.exports = {
     description: 'Show this help message',
     execute(message, args, client) {
         const prefix = Settings.prefix;
+        const commandList = [];
+        
+        // Loop Map object
+        client.commands.forEach((command) => {
+            commandList.push(`${prefix}${command.name} - ${command.description}`);
+        });
+
         const helpEmbed = new WebEmbed()
             .setColor('BLUE')
             .setTitle('Kukuri Client Commands')
-            .setDescription(
-                client.commands.map(command => `${prefix}${command.name} - ${command.description}`).join('\n')
-            );
+            .setDescription(commandList.join('\n'));
+
         message.channel.send({ content: `Help ${WebEmbed.hiddenEmbed}${helpEmbed}` });
     },
 };
