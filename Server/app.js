@@ -181,22 +181,50 @@ async function startBot() {
         });
 
         client.on('messageCreate', async (message) => {
-            if (message.channel.id === activeChannel) {
-                broadcastToClients({
-                    type: 'newMessage',
-                    message: {
-                        id: message.id,
-                        content: message.content,
-                        author: {
-                            username: message.author.username,
-                            avatar: message.author.displayAvatarURL(),
-                        },
-                        timestamp: message.createdTimestamp
-                    }
-                });
-            }
-
             try {
+                // WebSocket UI
+                if (message.channel.id === activeChannel) {
+                    broadcastToClients({
+                        type: 'newMessage',
+                        message: {
+                            id: message.id,
+                            content: message.content,
+                            author: {
+                                username: message.author.username,
+                                avatar: message.author.displayAvatarURL(),
+                            },
+                            timestamp: message.createdTimestamp
+                        }
+                    });
+                }
+        
+                // AFK Mode Part
+                const clientConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'Config', 'Client.json')));
+                
+                if (clientConfig.afk && (message.channel.type === 'DM' || message.mentions.users.has(client.user.id))) {
+                    if (message.author.id === client.user.id) return;
+                    if (message.content.includes('@everyone') || message.content.includes('@here')) return;
+        
+                    const randomKeyword = clientConfig.afkKeywords[Math.floor(Math.random() * clientConfig.afkKeywords.length)];
+                    
+                    try {
+                        await message.reply(randomKeyword);
+                        Logger.info(`AFK reply sent to ${message.author.tag}: ${randomKeyword}`);
+        
+                        // Send to Webhook
+                        const settings = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'Config', 'Settings.json')));
+                        if (settings.webhook) {
+                            const webhookClient = new WebhookClient({ url: settings.webhook });
+                            await webhookClient.send({
+                                content: `AFK Logs (Type: ${message.channel.type === 'DM' ? 'DM' : message.channel.name})\n\`\`\`\nUser: ${message.author.tag}\nMessage: ${message.content}\nResponse: ${randomKeyword}\`\`\``
+                            });
+                        }
+                    } catch (error) {
+                        Logger.expection('Error sending AFK reply:', error);
+                    }
+                }
+        
+                // Commands Part
                 const settingsConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'Config', 'Settings.json')));
                 const prefix = settingsConfig.prefix || '.';
         
