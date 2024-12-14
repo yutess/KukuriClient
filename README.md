@@ -36,9 +36,9 @@
   <li><strong>✅ Web Control</strong>: Implement the ability to control the selfbot through a web interface built with Next.js (or potentially another UI).</li>
   <li><strong>✅ Improved Code Readability</strong>: Make the code cleaner and easier to understand.</li>
   <li><strong>🔲 More Useful Commands</strong>: Continuously add new commands that provide genuine value to users.</li>
-  <li><strong>🔲 Example Usage</strong>: Provide examples and tutorials for using the bot effectively.</li>
+  <li><strong>✅ Example Usage</strong>: Provide examples and tutorials for using the bot effectively.</li>
   <li><strong>🔲 Notifications</strong>: Improve the notification system to make it more useful and customizable.</li>
-  <li><strong>🔲 Rich Presence</strong>: Allow users to customize Rich Presence through the Web Panel.</li>
+  <li><strong>✅ Rich Presence</strong>: Allow users to customize Rich Presence through the Web Panel.</li>
   <li><strong>🔲 Reminders</strong>: Enable users to set reminders via the website, which will notify them at the specified time.</li>
 </ul>
 <br />
@@ -58,26 +58,26 @@
 
 <ol>
   <li>Clone the repository.</li>
-  <li>Run the following command in your terminal:</li>
+  <li>Run <b>Menu.bat</b></li>
 </ol>
 
-```bash
-$ node Setup.js
-```
-<p>Alternatively:</p>
-
-```bash
-$ bun run Setup.js
-```
 <h3>Setup Process:</h3>
 <p>The setup process will prompt you with the following questions:</p>
 
 <pre>
-[INFO] ❇️ : Setup service Started!
-Enable Desktop Notification? (y/n)
-Do you want to set a new prefix? (default is .)
-Please enter your user token: TOKEN HERE
+╔════════════════════════════════════╗
+║        Kukuri Client Manager       ║
+╠════════════════════════════════════╣
+║ [1] Check/Install Bun              ║
+║ [2] Start Main.js                  ║
+║ [3] Start Server/app.js            ║
+║ [4] Build Application              ║
+║ [5] Exit                           ║
+╚════════════════════════════════════╝
+Choose option (1-5):
 </pre>
+If you doesn't have bun, choose 1 to install bun then choose 3</br>
+If you already have bun, choose 3
 
 <h2>🤝 Contributing</h2>
 <p>I welcome contributions to improve Kukuri Client!<br />However, all contributions must undergo a review process before being merged.</p>
