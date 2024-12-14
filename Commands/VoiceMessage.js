@@ -1,7 +1,7 @@
 const { MessageAttachment } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const path = require('path');
-const Logger = require('./Module/Logger');
+const Logger = require('../Module/Logger');
 
 module.exports = {
     name: 'voicemsg', // example: .voicemsg C:\Users\<user>\Downloads\<voice>.mp3

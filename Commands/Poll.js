@@ -1,5 +1,5 @@
 const { MessagePoll } = require('discord.js-selfbot-v13');
-const Logger = require('./Module/Logger');
+const Logger = require('../Module/Logger');
 
 module.exports = {
     name: 'poll', // example: .poll "Message with the space" "One" "Question Two" "And the question three!"

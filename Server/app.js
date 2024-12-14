@@ -148,9 +148,12 @@ async function startBot() {
 
         for (const file of commandFiles) {
             try {
+                delete require.cache[require.resolve(path.join(commandsPath, file))];
                 const command = require(path.join(commandsPath, file));
-                client.commands.set(command.name, command);
-                Logger.load(`Loaded command: ${command.name}`);
+                if (command.name && command.execute) {
+                    client.commands.set(command.name, command);
+                    Logger.load(`Loaded command: ${command.name}`);
+                }
             } catch (error) {
                 Logger.expection(`Error loading command ${file}:`, error);
             }
@@ -159,6 +162,27 @@ async function startBot() {
         client.on('ready', async () => {
             Logger.load(`Bot is online as ${client.user.tag}`);
             
+            // Booting command ._.
+            try {
+                const bootConfigPath = path.join(__dirname, '..', 'Config', 'Boot.json');
+                if (fs.existsSync(bootConfigPath)) {
+                    const bootConfig = JSON.parse(fs.readFileSync(bootConfigPath, 'utf-8'));
+                    
+                    if (bootConfig.enabled && bootConfig.channelId) {
+                        const channel = await client.channels.fetch(bootConfig.channelId);
+                        if (channel) {
+                            const bootMsg = await channel.send('*Booting*');
+                            
+                            setTimeout(async () => {
+                                await bootMsg.edit('*Booted*');
+                            }, 3000);
+                        }
+                    }
+                }
+            } catch (error) {
+                Logger.expection('Error sending boot message:', error);
+            }
+
             // Load and apply RPC settings when bot starts
             try {
                 const configPath = path.join(__dirname, '..', 'Config', 'Client.json');
@@ -227,23 +251,20 @@ async function startBot() {
                 // Commands Part
                 const settingsConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'Config', 'Settings.json')));
                 const prefix = settingsConfig.prefix || '.';
-        
+
                 if (!message.author.bot && message.content.startsWith(prefix)) {
+                    if (message.author.id !== client.user.id) {
+                        return;
+                    }
+        
                     const args = message.content.slice(prefix.length).trim().split(/ +/);
                     const commandName = args.shift().toLowerCase();
         
-                    const commandPath = path.join(__dirname, '..', 'Commands', `${commandName}.js`);
+                    const command = client.commands.get(commandName);
                     
-                    if (fs.existsSync(commandPath)) {
+                    if (command) {
                         try {
-                            const command = require(commandPath);
-                            Logger.debug('Command module loaded:', command);
-                            
-                            if (command && typeof command.execute === 'function') {
-                                await command.execute(message, args, client);
-                            } else {
-                                Logger.expection(`Invalid command module structure: ${commandName}`);
-                            }
+                            await command.execute(message, args, client);
                         } catch (commandError) {
                             Logger.expection(`Error executing command ${commandName}:`, commandError);
                             Logger.expection('Command error full details:', commandError);

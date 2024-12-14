@@ -1,6 +1,6 @@
 const { WebEmbed } = require('discord.js-selfbot-v13');
 const notifier = require('node-notifier');
-const Logger = require('./Module/Logger');
+const Logger = require('../Module/Logger');
 
 module.exports = {
     name: 'clean',
@@ -11,7 +11,7 @@ module.exports = {
         }
 
         if (args.length !== 1 || isNaN(args[0])) {
-            return message.reply('Please provide a valid number of messages to delete. Example: .delete 10');
+            return message.reply('Please provide a valid number of messages to delete. Example: .clean 10');
         }
 
         const amount = parseInt(args[0]);

@@ -5,15 +5,15 @@ module.exports = {
     description: 'Perform basic mathematical calculations',
     execute(message, args, client) {
         if (args.length < 3) {
-            return message.reply('Please provide a valid calculation. Example: .cal 5 + 3');
+            return message.reply('Usage: .cal [number] [operator] [number]');
         }
 
-        const num1 = parseFloat(args[0]);
+        const num1 = Number(args[0]);
         const operator = args[1];
-        const num2 = parseFloat(args[2]);
+        const num2 = Number(args[2]);
 
         if (isNaN(num1) || isNaN(num2)) {
-            return message.reply('Please provide valid numbers for calculation.');
+            return message.reply('Please provide valid numbers');
         }
 
         let result;
@@ -40,15 +40,14 @@ module.exports = {
                 operation = 'Division';
                 break;
             default:
-                return message.reply('Invalid operator. Please use +, -, *, or /');
+                return message.reply('Please use these operators: +, -, *, /');
         }
 
         const embed = new WebEmbed()
             .setColor('#0099ff')
             .setTitle('Calculation Result')
-            .setURL('https://github.com/Mikasuru/KukuriClient')
-            .setDescription(`Operation: ${operation}\n\nExpression: ${num1} ${operator} ${num2}\nResult: ${result.toString()}`)
-            
+            .setDescription(`Operation: ${operation}\nExpression: ${num1} ${operator} ${num2}\nResult: ${result}`);
+
         message.channel.send({ content: `${WebEmbed.hiddenEmbed}${embed}` });
     },
 };
