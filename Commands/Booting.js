@@ -2,23 +2,18 @@ const { WebEmbed } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const path = require('path');
 const Logger = require('../Module/Logger');
+const Config = require('../Config/Config.json');
 
 module.exports = {
     name: 'boot',
     description: 'Set boot message channel and toggle boot status',
     async execute(message, args, client) {
         try {
-            const configPath = path.join(__dirname, '..', 'Config', 'Boot.json');
-            let bootConfig = {};
-
-            if (fs.existsSync(configPath)) {
-                bootConfig = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-            }
-
             if (!args.length) {
                 return message.reply('Usage: .boot on [channelId] or .boot off');
             }
 
+            const configPath = path.join(__dirname, '..', 'Config', 'Config.json');
             const option = args[0].toLowerCase();
 
             if (option !== 'on' && option !== 'off') {
@@ -26,7 +21,7 @@ module.exports = {
             }
 
             if (option === 'on') {
-                const channelId = args[1] || bootConfig.channelId;
+                const channelId = args[1] || Config.Commands.Booting.ChannelID;
                 
                 if (!channelId) {
                     return message.reply('Please provide a channel ID: .boot on [channelId]');
@@ -37,15 +32,18 @@ module.exports = {
                     return message.reply('Invalid channel ID. Please try again.');
                 }
 
-                bootConfig.channelId = channelId;
-                bootConfig.enabled = true;
+                // Update Config object
+                Config.Commands.Booting.ChannelID = channelId;
+                Config.Commands.Booting.Enabled = true;
                 message.reply(`Boot message enabled in channel: ${channel.name}`);
             } else {
-                bootConfig.enabled = false;
+                // Update Config object
+                Config.Commands.Booting.Enabled = false;
                 message.reply('Boot message disabled!');
             }
 
-            fs.writeFileSync(configPath, JSON.stringify(bootConfig, null, 2));
+            // Save updated config
+            fs.writeFileSync(configPath, JSON.stringify(Config, null, 2));
 
         } catch (error) {
             Logger.expection(`Error in boot command: ${error.message}`);

@@ -1,80 +1,118 @@
 const { Client, RichPresence, CustomStatus, SpotifyRPC } = require('discord.js-selfbot-v13');
 
 module.exports = {
-    name: 'rpc', // I DID NOT TEST THIS COMMAND, DONT BLAME ME IF IT BUG
+    name: 'rpc',
     description: 'Set up Rich Presence interactively',
     async execute(message, args, client) {
         const filter = m => m.author.id === message.author.id;
         const collect = async (prompt) => {
             await message.channel.send(prompt);
             const collected = await message.channel.awaitMessages({ filter, max: 1, time: 30000 });
-            return collected.first()?.content;
+            const content = collected.first()?.content;
+            return content === 'None' || content === '-' ? null : content;
         };
 
-        const rpcType = await collect('# Choose RPC type:\n1. Rich Presence,\n2. Custom Status,\n3. Spotify');
+        const rpcType = await collect('Choose RPC Type:\n1️⃣: Rich Presence\n2️⃣: Custom Status\n3️⃣: Spotify RPC\n(If you want to skip, type "None" or "-")');
 
         switch (rpcType) {
             case '1':
+            case '1️⃣':
                 await setRichPresence(message, collect, client);
                 break;
             case '2':
+            case '2️⃣':
                 await setCustomStatus(message, collect, client);
                 break;
             case '3':
+            case '3️⃣':
                 await setSpotifyRPC(message, collect, client);
                 break;
             default:
-                message.reply('Invalid choice. Please try again.');
+                message.reply('❌ Incorrect RPC type selected.');
         }
     },
 };
 
 async function setRichPresence(message, collect, client) {
-    const applicationId = await collect('# Enter application ID:');
-    const name = await collect('# Enter name:');
-    const details = await collect('# Enter details:');
-    const state = await collect('# Enter state:');
-    const largeImageUrl = await collect('# Enter large image URL:');
-    const smallImageId = await collect('# Enter small image ID:');
+    try {
+        const applicationId = await collect('📝 Application ID:');
+        if (!applicationId) {
+            return message.reply('❌ Please provide Application ID');
+        }
 
-    const getExtendURL = await RichPresence.getExternal(client, applicationId, largeImageUrl);
+        const name = await collect('📝 RPC Title:') || 'Kukuri Client';
+        const details = await collect('📝 Infomation:');
+        const state = await collect('📝 State:');
+        const largeImageUrl = await collect('📝 Large image URL:');
+        const smallImageId = await collect('📝 Small image ID:');
 
-    const rpc = new RichPresence(client)
-        .setApplicationId(applicationId)
-        .setName(name)
-        .setDetails(details)
-        .setState(state)
-        .setAssetsLargeImage(getExtendURL[0].external_asset_path)
-        .setAssetsSmallImage(smallImageId);
+        const rpc = new RichPresence(client)
+            .setApplicationId(applicationId)
+            .setName(name);
 
-    client.user.setPresence({ activities: [rpc] });
-    message.reply('Rich Presence set successfully!');
+        if (details) rpc.setDetails(details);
+        if (state) rpc.setState(state);
+
+        if (largeImageUrl) {
+            try {
+                const getExtendURL = await RichPresence.getExternal(client, applicationId, largeImageUrl);
+                rpc.setAssetsLargeImage(getExtendURL[0].external_asset_path);
+            } catch (error) {
+                message.channel.send('⚠️ Cannot get external URL for large image.');
+            }
+        }
+
+        if (smallImageId) rpc.setAssetsSmallImage(smallImageId);
+
+        client.user.setPresence({ activities: [rpc] });
+        message.reply('✅ Set Rich Presence Successfully!');
+    } catch (error) {
+        message.reply(`❌ Error: ${error.message}`);
+    }
 }
 
 async function setCustomStatus(message, collect, client) {
-    const emoji = await collect('# Enter emoji:');
-    const state = await collect('# Enter state:');
+    try {
+        const emoji = await collect('📝 Emoji:');
+        const state = await collect('📝 State:');
 
-    const custom = new CustomStatus(client).setEmoji(emoji).setState(state);
+        if (!state && !emoji) {
+            return message.reply('❌ Provide at least one of the following: emoji, state');
+        }
 
-    client.user.setPresence({ activities: [custom] });
-    message.reply('Custom Status set successfully!');
+        const custom = new CustomStatus(client);
+        if (emoji) custom.setEmoji(emoji);
+        if (state) custom.setState(state);
+
+        client.user.setPresence({ activities: [custom] });
+        message.reply('✅ Set Custom Status Successfully!');
+    } catch (error) {
+        message.reply(`❌ Error: ${error.message}`);
+    }
 }
 
 async function setSpotifyRPC(message, collect, client) {
-    const songName = await collect('# Enter song name:');
-    const artists = await collect('# Enter artists (comma-separated):');
-    const albumName = await collect('# Enter album name:');
-    const duration = await collect('# Enter song duration in seconds:');
+    try {
+        const songName = await collect('📝 Song name:');
+        if (!songName) {
+            return message.reply('❌ Required song name');
+        }
 
-    const spotify = new SpotifyRPC(client)
-        .setAssetsLargeImage('spotify:ab67616d00001e02768629f8bc5b39b68797d1bb')
-        .setState(artists)
-        .setDetails(songName)
-        .setAssetsLargeText(albumName)
-        .setStartTimestamp(Date.now())
-        .setEndTimestamp(Date.now() + duration * 1000);
+        const artists = await collect('📝 Artist name:') || 'Kukuri and the Harmonic Odyssey';
+        const albumName = await collect('📝 Album name:') || songName;
+        const duration = parseInt(await collect('📝 Song duration (in second):') || '240');
 
-    client.user.setPresence({ activities: [spotify] });
-    message.reply('Spotify RPC set successfully!');
+        const spotify = new SpotifyRPC(client)
+            .setAssetsLargeImage('spotify:ab67616d00001e02768629f8bc5b39b68797d1bb')
+            .setState(artists)
+            .setDetails(songName)
+            .setAssetsLargeText(albumName)
+            .setStartTimestamp(Date.now())
+            .setEndTimestamp(Date.now() + duration * 1000);
+
+        client.user.setPresence({ activities: [spotify] });
+        message.reply('✅ Set Spotify RPC Successfully!');
+    } catch (error) {
+        message.reply(`❌ Error: ${error.message}`);
+    }
 }

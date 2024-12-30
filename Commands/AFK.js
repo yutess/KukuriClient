@@ -2,19 +2,21 @@ const fs = require('fs');
 const path = require('path');
 const { WebhookClient } = require('discord.js-selfbot-v13');
 
-let User = require("../Config/Client.json");
+const Config = require("../Config/Config.json");
 const Settings = require("../Config/Settings.json");
 
 module.exports = {
     name: 'afk',
     description: 'Toggle AFK mode',
     execute(message, args, client) {
-        const configPath = path.join(__dirname, '..', 'Config', 'Client.json');
+        const configPath = path.join(__dirname, '..', 'Config', 'Config.json');
         
-        User.afk = !User.afk;
+        // Toggle AFK status
+        Config.Commands.AFK.afk = !Config.Commands.AFK.afk;
 
-        fs.writeFileSync(configPath, JSON.stringify(User, null, 2));
-        message.reply(`AFK mode has been ${User.afk ? 'enabled' : 'disabled'}.`);
+        // Save updated config
+        fs.writeFileSync(configPath, JSON.stringify(Config, null, 2));
+        message.reply(`AFK mode has been ${Config.Commands.AFK.afk ? 'enabled' : 'disabled'}.`);
     },
     init(client) {
         client.on('messageCreate', handle);
@@ -22,16 +24,21 @@ module.exports = {
 };
 
 async function handle(message) {
-    User = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'Config', 'Client.json')));
+    // Reload config on each message to get latest settings
+    const Config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'Config', 'Config.json')));
 
-    if (!User.afk) return;
+    if (!Config.Commands.AFK.afk) return;
 
     // Check if mention or DM
     if (message.channel.type === 'DM' || message.mentions.users.has(message.client.user.id)) {
         if (message.author.id === message.client.user.id) return; // Don't reply to self
         if (message.content.includes('@everyone') || message.content.includes('@here')) return; // Exclude everyone and here
 
-        const randomKeyword = User.afkKeywords[Math.floor(Math.random() * User.afkKeywords.length)];
+        // Get random AFK message from config
+        const randomKeyword = Config.Commands.AFK.afkKeywords[
+            Math.floor(Math.random() * Config.Commands.AFK.afkKeywords.length)
+        ];
+        
         await message.reply(`${randomKeyword}`);
 
         try {
