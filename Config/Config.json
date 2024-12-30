@@ -1,0 +1,31 @@
+{
+    "BotSettings": {
+        "Token": "NTkxODM3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9SILaxa80",
+        "Prefix": "."
+    },
+    "GeneralSettings": {
+        "OwnerID": "xxxxxxxxxxxxxxx0092",
+        "ShowLoadCommands": false
+    },
+    "Commands": {
+        "Booting": {
+            "Enabled": true,
+            "Status": "Booting up...",
+            "ChannelID": "49xxxxxxxxxxx50092"
+        },
+        "AFK": {
+            "afk": false, 
+            "afkKeywords": [
+                "What's up? I'm afk, Will be back soon!",
+                "This is an auto message, I'm currently afk.",
+                "Wait a min, I'm afk",
+                "What, wait a sec",
+                "yo wait I'm afk dude",
+                "this is an auto msg, I'm afk",
+                "afk",
+                "I'm afk, will be back soon!"
+            ]
+        }
+    }
+
+}
