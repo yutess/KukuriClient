@@ -1,39 +1,43 @@
 const { Client } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const path = require('path');
-const Token = require("./Config/Token.json");
+const Config = require("./Config/Config.json");
 
 const client = new Client({
     checkUpdate: false
 });
 
-// Command Collection
 client.commands = new Map();
 
 function loadCommands() {
     const commandsPath = path.join(__dirname, 'Commands');
     const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-    
+    let loadedCount = 0;
+
+    console.log('Loading commands...');
     for (const file of commandFiles) {
         try {
             const command = require(path.join(commandsPath, file));
             client.commands.set(command.name, command);
-            console.log(`Loaded command: ${command.name}`);
+            if (Config.GeneralSettings.ShowLoadCommands == true) {
+                console.log(`✅: ${command.name}`);
+            }
+            loadedCount++;
         } catch (error) {
-            console.error(`Error loading command ${file}:`, error);
+            console.error(`❌: ('${file}') - `, error.message);
         }
     }
+    console.log(`${loadedCount} Command(s) loaded successfully.`);
 }
 
 client.on('ready', () => {
-    console.log(`Bot is online as ${client.user.tag}`);
     loadCommands();
+    console.log(`Logged as ${client.user.tag}`);
 });
 
 client.on('messageCreate', async (message) => {
     try {
-        const settingsConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'Config/Settings.json')));
-        const prefix = settingsConfig.prefix || '.';
+        const prefix = Config.BotSettings.Prefix || '.';
 
         if (!message.author.bot && message.content.startsWith(prefix)) {
             const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -49,4 +53,4 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-client.login(Token.token);
+client.login(Config.BotSettings.Token);
