@@ -36,11 +36,11 @@
 <ul>
   <li><strong>✅ Web Control</strong>: Implement the ability to control the selfbot through a web interface built with Next.js (or potentially another UI).</li>
   <li><strong>✅ Improved Code Readability</strong>: Make the code cleaner and easier to understand.</li>
-  <li><strong>🔲 More Useful Commands</strong>: Continuously add new commands that provide genuine value to users.</li>
+  <li><strong>✅ More Useful Commands</strong>: Continuously add new commands that provide genuine value to users.</li>
   <li><strong>✅ Example Usage</strong>: Provide examples and tutorials for using the bot effectively.</li>
   <li><strong>🔲 Notifications</strong>: Improve the notification system to make it more useful and customizable.</li>
   <li><strong>✅ Rich Presence</strong>: Allow users to customize Rich Presence through the Web Panel.</li>
-  <li><strong>🔲 Reminders</strong>: Enable users to set reminders via the website, which will notify them at the specified time.</li>
+  <li><strong>✅ Reminders</strong>: Enable users to set reminders via the website, which will notify them at the specified time.</li>
 </ul>
 <br />
 <h3 align="center"><strong>⚙️</strong> You can track my development progress and to-do list in the Discord server!</h3>
