@@ -1,20 +1,30 @@
 {
     "BotSettings": {
-        "Token": "NTkxODM3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx9SILaxa80",
-        "Prefix": "."
+        "Token": "NTkxODM3Mxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxr3Xxxxxxxxxxxxxxxxxxxxxa80",
+        "Prefix": ".",
+        "BotAdmins": [
+            "xxxxxxxxxxxxxxx0092",
+            "xxxxxxxxxxxxxxx0092",
+            "85394xxxxxxxxxxx623507979"
+        ]
     },
     "GeneralSettings": {
-        "OwnerID": "xxxxxxxxxxxxxxx0092",
+        "OwnerID": "591837xxxxx350092",
         "ShowLoadCommands": false
+    },
+    "NotificationSettings": {
+        "Enabled": true,
+        "Webhook": "https://discord.com/api/webhooks/13235xxxxxxxxxx776885/fWrn2L5xxxxxxxxxxxxxxxxxxxxxka75S3DR0A1BHDo5ygh_wchlXP2u-Qa_ycc9Gt0"
     },
     "Commands": {
         "Booting": {
-            "Enabled": true,
-            "Status": "Booting up...",
+            "Enabled": false,
+            "Status": "Starting up the bot...",
+            "AfterStatus": "Bot is now online!",
             "ChannelID": "49xxxxxxxxxxx50092"
         },
         "AFK": {
-            "afk": false, 
+            "afk": false,
             "afkKeywords": [
                 "What's up? I'm afk, Will be back soon!",
                 "This is an auto message, I'm currently afk.",
@@ -27,5 +37,4 @@
             ]
         }
     }
-
 }
