@@ -1,10 +1,11 @@
 <h1 align="center">Kukuri Client</h1>
 <p align="center">
-  <i>A free and open-source Discord selfbot with powerful features and control via Web Panel.</i>
+  <i>A free and open-source Discord selfbot with powerful features and control via Web Panel and CLI.</i>
 </p>
 
 <p align="center">
-  <img src="https://media.discordapp.net/attachments/1312080105627062314/1312815252815089695/image.png?ex=674dddfb&is=674c8c7b&hm=2a0db23ad1e8c84ac277a32184781f345070f6641a90cc0b319f561e0f651dad&=&format=webp&quality=lossless&width=1296&height=1039" alt="Web Panel Screenshot" width="600" />
+  <img src="https://media.discordapp.net/attachments/1312080817425485905/1318245751628890203/image.png?ex=6774bd47&is=67736bc7&hm=67a823cdcb783b094545fc37a356a16772217cf90f4afafa458a06b8fca2a6d3&=&format=webp&quality=lossless&width=1618&height=988" alt="Screenshot" width="600" />
+  <p align="center">Upcoming at 1.0.3 Update (Linux Supported)</p>
 </p>
 
 ---
