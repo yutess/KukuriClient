@@ -2,6 +2,7 @@ const { Client } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const path = require('path');
 const Config = require("./Config/Config.json");
+const scheduleCommand = require('./Commands/Schedule');
 
 const client = new Client({
     checkUpdate: false
@@ -30,15 +31,24 @@ function loadCommands() {
     console.log(`${loadedCount} Command(s) loaded successfully.`);
 }
 
-client.on('ready', () => {
+client.on('ready', async () => {
     loadCommands();
     console.log(`Logged as ${client.user.tag}`);
+    scheduleCommand.initialize(client);
+    for (const command of client.commands.values()) {
+        if (command.onReady) {
+            await command.onReady(client);
+        }
+    }
+    // TODO: Make a startup message if bot starting up
 });
 
 client.on('messageCreate', async (message) => {
     try {
         const prefix = Config.BotSettings.Prefix || '.';
-
+        if (message.author.id !== Config.GeneralSettings.OwnerID && !Config.BotSettings.BotAdmins.includes(message.author.id)) {
+            return; // return if not an owner or admin
+        } 
         if (!message.author.bot && message.content.startsWith(prefix)) {
             const args = message.content.slice(prefix.length).trim().split(/ +/);
             const commandName = args.shift().toLowerCase();

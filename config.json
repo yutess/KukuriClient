@@ -1,0 +1,21 @@
+{
+    "token": "",
+    "prefix": ".",
+    "notification": false,
+    "webhook": "",
+    "afk": {
+        "enabled": false,
+        "messages": [
+            "I'm AFK right now",
+            "Be back soon",
+            "Away from keyboard"
+        ]
+    },
+    "rpc": {
+        "enabled": false,
+        "details": "",
+        "state": "",
+        "large_image": "",
+        "small_image": ""
+    }
+}
