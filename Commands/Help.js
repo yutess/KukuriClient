@@ -1,6 +1,7 @@
 const { createCanvas } = require('canvas');
 const { MessageAttachment } = require('discord.js-selfbot-v13');
 const Settings = require("../Config/Settings.json");
+const { version } = require('../package.json');
 
 module.exports = {
     name: 'help',
@@ -121,7 +122,7 @@ module.exports = {
             const buffer = canvas.toBuffer();
             const attachment = new MessageAttachment(buffer, 'kukuri-commands.png');
             message.channel.send({
-                content: 'Kukuri Client v1.0.3',
+                content: `Kukuri Client v${version}`,
                 files: [attachment],
             });
         } else {
