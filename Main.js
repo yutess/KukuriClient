@@ -31,7 +31,19 @@ function loadCommands() {
     console.log(`${loadedCount} Command(s) loaded successfully.`);
 }
 
+function ConfigOwnerID(userID) {
+    Config.GeneralSettings.OwnerID = userID; // update OwnerID in memory
+    
+    const configPath = path.join(__dirname, 'Config', 'Config.json');
+    fs.writeFileSync(configPath, JSON.stringify(Config, null, 4), 'utf8');
+    console.log(`Updated OwnerID to: ${userID}`);
+}
+
 client.on('ready', async () => {
+    if (!Config.GeneralSettings.OwnerID || Config.GeneralSettings.OwnerID.trim() === '') {
+        ConfigOwnerID(client.user.id);
+    }
+    
     loadCommands();
     console.log(`Logged as ${client.user.tag}`);
     scheduleCommand.initialize(client);
