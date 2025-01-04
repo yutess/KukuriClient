@@ -2,7 +2,7 @@ const { Client } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const path = require('path');
 const Config = require("./Config/Config.json");
-const scheduleCommand = require('./Commands/Schedule');
+const scheduleCommand = require('./Commands/Misc/Schedule');
 
 const client = new Client({
     checkUpdate: false
@@ -10,25 +10,36 @@ const client = new Client({
 
 client.commands = new Map();
 
-function loadCommands() {
-    const commandsPath = path.join(__dirname, 'Commands');
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+function loadCommands(dir = 'Commands') {
+    const commandsPath = path.join(__dirname, dir);
+    const items = fs.readdirSync(commandsPath);
     let loadedCount = 0;
 
-    console.log('Loading commands...');
-    for (const file of commandFiles) {
-        try {
-            const command = require(path.join(commandsPath, file));
-            client.commands.set(command.name, command);
-            if (Config.GeneralSettings.ShowLoadCommands == true) {
-                console.log(`✅: ${command.name}`);
+    for (const item of items) {
+        const itemPath = path.join(commandsPath, item);
+        const stat = fs.statSync(itemPath);
+
+        if (stat.isDirectory()) {
+            // Recursively load commands from subdirectories
+            loadedCount += loadCommands(path.join(dir, item));
+        } else if (item.endsWith('.js')) {
+            try {
+                const command = require(itemPath);
+                client.commands.set(command.name, command);
+                if (Config.GeneralSettings.ShowLoadCommands == true) {
+                    console.log(`✅: ${command.name}`);
+                }
+                loadedCount++;
+            } catch (error) {
+                console.error(`❌: ('${item}') - `, error.message);
             }
-            loadedCount++;
-        } catch (error) {
-            console.error(`❌: ('${file}') - `, error.message);
         }
     }
-    console.log(`${loadedCount} Command(s) loaded successfully.`);
+    
+    if (dir === 'Commands') {
+        console.log(`Loaded ${loadedCount} commands`);
+    }
+    return loadedCount;
 }
 
 function ConfigOwnerID(userID) {
@@ -56,6 +67,9 @@ client.on('ready', async () => {
 });
 
 client.on('messageCreate', async (message) => {
+    const configPath = './Config/Config.json';
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
     try {
         const prefix = Config.BotSettings.Prefix || '.';
         if (message.author.id !== Config.GeneralSettings.OwnerID && !Config.BotSettings.BotAdmins.includes(message.author.id)) {
@@ -68,6 +82,13 @@ client.on('messageCreate', async (message) => {
             const command = client.commands.get(commandName);
             if (command) {
                 await command.execute(message, args, client);
+                if (Config.GeneralSettings.EnableDelete) {
+                    try {
+                        await message.delete();
+                    } catch (deleteError) {
+                        console.error('Error deleting message:', deleteError);
+                    }
+                }
             }
         }
     } catch (error) {

@@ -8,10 +8,12 @@
     },
     "GeneralSettings": {
         "OwnerID": "",
-        "ShowLoadCommands": false
+        "ShowLoadCommands": false,
+        "EnableNSFW": false,
+        "EnableDelete": false
     },
     "NotificationSettings": {
-        "Enabled": true,
+        "Enabled": false,
         "Webhook": ""
     },
     "Commands": {
