@@ -17,9 +17,9 @@ module.exports = {
         }
         message.delete();
         const content = args.slice(1).join(' ');
-        if (args[0] === '1') return await message.channel.send(`${content}\n-# This user is under surveillance by the US FBI • [Learn More](<https://maper.info/2tfAA5>)\n-# Do not contact this user, they are the subject of a criminal case under 18 U.S.C § 2332b effective April 24, 2024 • [Learn More](<https://maper.info/2tfAA5>)`);
-        if (args[0] === '2') return await message.channel.send(`${content}\n-# This user is under investigation by law enforcement authorities for violations related to child exploitation and abuse • [Learn More](<https://maper.info/2tfAA5>)\n-# The user is the subject of an ongoing criminal case under 18 U.S.C § 2251A, concerning the exploitation of minors, effective April 24, 2024 • [Learn More](<https://maper.info/2tfAA5>)`);
-        if (args[0] === '3') return await message.channel.send(`${content}\n-# This user is under investigation for involvement in the illegal distribution and trafficking of child exploitation materials • [Learn More](<https://maper.info/2tfAA5>)\n-# The user is the subject of a criminal investigation under 18 U.S.C § 2252A, regarding the trafficking of child pornography, effective April 24, 2024 • [Learn More](<https://maper.info/2tfAA5>)`);
+        if (args[0] === '1') return await message.channel.send(`${content}\n-# This user is under surveillance by the US FBI • [Learn More](<https://google.com>)\n-# Do not contact this user, they are the subject of a criminal case under 18 U.S.C § 2332b effective April 24, 2024 • [Learn More](<https://google.com>)`);
+        if (args[0] === '2') return await message.channel.send(`${content}\n-# This user is under investigation by law enforcement authorities for violations related to child exploitation and abuse • [Learn More](<https://google.com>)\n-# The user is the subject of an ongoing criminal case under 18 U.S.C § 2251A, concerning the exploitation of minors, effective April 24, 2024 • [Learn More](<https://google.com>)`);
+        if (args[0] === '3') return await message.channel.send(`${content}\n-# This user is under investigation for involvement in the illegal distribution and trafficking of child exploitation materials • [Learn More](<https://google.com>)\n-# The user is the subject of a criminal investigation under 18 U.S.C § 2252A, regarding the trafficking of child pornography, effective April 24, 2024 • [Learn More](<https://google.com>)`);
 
     },
 };
