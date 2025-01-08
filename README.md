@@ -3,11 +3,6 @@
   <i>A free and open-source Discord selfbot with powerful features and control via Web Panel and CLI.</i>
 </p>
 
-<p align="center">
-  <img src="https://media.discordapp.net/attachments/1312080817425485905/1318245751628890203/image.png?ex=6774bd47&is=67736bc7&hm=67a823cdcb783b094545fc37a356a16772217cf90f4afafa458a06b8fca2a6d3&=&format=webp&quality=lossless&width=1618&height=988" alt="Screenshot" width="600" />
-  <p align="center">Upcoming at 1.0.3 Update (Linux Supported)</p>
-</p>
-
 ---
 
 <h2 align="center">✨Community</h2>
