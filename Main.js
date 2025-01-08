@@ -1,99 +1,85 @@
 const { Client } = require('discord.js-selfbot-v13');
-const fs = require('fs');
 const path = require('path');
-const Config = require("./Config/Config.json");
-const scheduleCommand = require('./Commands/Misc/Schedule');
+const fs = require('fs').promises;
+const Config = require('./Config/Config.json');
+const Logger = require('./Module/Logger');
+const CommandHandler = require('./Module/CommandHandler');
+const { version } = require('./package.json');
 
-const client = new Client({
-    checkUpdate: false
-});
+class KukuriClient {
+    constructor() {
+        this.client = new Client({
+            checkUpdate: false
+        });
+        
+        this.commandHandler = new CommandHandler(this.client, Config);
+        this.client.commandHandler = this.commandHandler;
+    }
 
-client.commands = new Map();
-
-function loadCommands(dir = 'Commands') {
-    const commandsPath = path.join(__dirname, dir);
-    const items = fs.readdirSync(commandsPath);
-    let loadedCount = 0;
-
-    for (const item of items) {
-        const itemPath = path.join(commandsPath, item);
-        const stat = fs.statSync(itemPath);
-
-        if (stat.isDirectory()) {
-            // Recursively load commands from subdirectories
-            loadedCount += loadCommands(path.join(dir, item));
-        } else if (item.endsWith('.js')) {
-            try {
-                const command = require(itemPath);
-                client.commands.set(command.name, command);
-                if (Config.GeneralSettings.ShowLoadCommands == true) {
-                    console.log(`✅: ${command.name}`);
-                }
-                loadedCount++;
-            } catch (error) {
-                console.error(`❌: ('${item}') - `, error.message);
-            }
+    async initialize() {
+        try {
+            await this.setupConfig();
+            await this.setupEventListeners();
+            await this.commandHandler.loadCommands();
+            await this.login();
+        } catch (error) {
+            Logger.error('Failed to initialize client:', error);
+            process.exit(1);
         }
     }
-    
-    if (dir === 'Commands') {
-        console.log(`Loaded ${loadedCount} commands`);
-    }
-    return loadedCount;
-}
 
-function ConfigOwnerID(userID) {
-    Config.GeneralSettings.OwnerID = userID; // update OwnerID in memory
-    
-    const configPath = path.join(__dirname, 'Config', 'Config.json');
-    fs.writeFileSync(configPath, JSON.stringify(Config, null, 4), 'utf8');
-    console.log(`Updated OwnerID to: ${userID}`);
-}
-
-client.on('ready', async () => {
-    if (!Config.GeneralSettings.OwnerID || Config.GeneralSettings.OwnerID.trim() === '') {
-        ConfigOwnerID(client.user.id);
-    }
-    
-    loadCommands();
-    console.log(`Logged as ${client.user.tag}`);
-    scheduleCommand.initialize(client);
-    for (const command of client.commands.values()) {
-        if (command.onReady) {
-            await command.onReady(client);
+    async setupConfig() {
+        if (!Config.GeneralSettings.OwnerID || Config.GeneralSettings.OwnerID.trim() === '') {
+            Config.GeneralSettings.OwnerID = this.client.user.id;
+            await this.saveConfig();
         }
     }
-    // TODO: Make a startup message if bot starting up
-});
 
-client.on('messageCreate', async (message) => {
-    const configPath = './Config/Config.json';
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    async setupEventListeners() {
+        this.client.on('ready', () => this.handleReady());
+        this.client.on('messageCreate', (message) => this.commandHandler.handleCommand(message));
+        this.client.on('error', (error) => Logger.error('Client error:', error));
+        this.client.on('warn', (warning) => Logger.warning('Client warning:', warning));
+    }
 
-    try {
-        const prefix = Config.BotSettings.Prefix || '.';
-        if (message.author.id !== Config.GeneralSettings.OwnerID && !Config.BotSettings.BotAdmins.includes(message.author.id)) {
-            return; // return if not an owner or admin
-        } 
-        if (!message.author.bot && message.content.startsWith(prefix)) {
-            const args = message.content.slice(prefix.length).trim().split(/ +/);
-            const commandName = args.shift().toLowerCase();
-
-            const command = client.commands.get(commandName);
-            if (command) {
-                await command.execute(message, args, client);
-                if (Config.GeneralSettings.EnableDelete) {
-                    try {
-                        await message.delete();
-                    } catch (deleteError) {
-                        console.error('Error deleting message:', deleteError);
-                    }
+    async handleReady() {
+        Logger.info(`Logged in as ${this.client.user.tag}`);
+        Logger.system(`--> Now using Kukuri Client v${version}`);
+        
+        // Initialize all commands that have onReady handlers
+        for (const [, command] of this.commandHandler.getCommands()) {
+            if (command.onReady) {
+                try {
+                    await command.onReady(this.client);
+                } catch (error) {
+                    Logger.error(`Failed to initialize command ${command.name}:`, error);
                 }
             }
         }
-    } catch (error) {
-        console.error('Error handling command:', error);
     }
-});
 
-client.login(Config.BotSettings.Token);
+    async login() {
+        try {
+            await this.client.login(Config.BotSettings.Token);
+        } catch (error) {
+            Logger.error('Failed to login:', error);
+            process.exit(1);
+        }
+    }
+
+    async saveConfig() {
+        try {
+            const configPath = path.join(__dirname, 'Config', 'Config.json');
+            await fs.writeFile(configPath, JSON.stringify(Config, null, 4));
+        } catch (error) {
+            Logger.error('Failed to save config:', error);
+        }
+    }
+}
+
+// Start the client
+const client = new KukuriClient();
+client.initialize().catch(error => {
+    Logger.error('Failed to start client:', error);
+    process.exit(1);
+});
