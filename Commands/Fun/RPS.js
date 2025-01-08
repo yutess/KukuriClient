@@ -2,6 +2,10 @@ module.exports = {
     name: 'rps',
     description: 'Play rock paper scissors',
     category: 'Fun',
+    aliases: ['rockpaperscissors'],
+    cooldown: 3,
+    usage: '.rps [rock/paper/scissors]\nExample: .rps rock',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const options = ['rock', 'paper', 'scissors'];
         const userChoice = args[0];

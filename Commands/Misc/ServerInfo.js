@@ -2,9 +2,13 @@ const { WebEmbed } = require('discord.js-selfbot-v13');
 
 module.exports = {
     name: 'serverinfo',
-    description: 'Get information about the current server',
+    description: 'Get information about the server',
     category: 'Misc',
-    async execute(message, args, client) {
+    aliases: ['server', 'guild'],
+    cooldown: 5,
+    usage: '.serverinfo',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         if (!message.guild) return message.channel.send('❌ This command can only be used in a server.');
         try {
             // Collect server information

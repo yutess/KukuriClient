@@ -5,7 +5,11 @@ module.exports = {
     name: 'slowmode',
     description: 'Set channel slowmode duration',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['slow'],
+    cooldown: 5,
+    usage: '.slowmode [duration] [#channel]',
+    permissions: ['MANAGE_CHANNELS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

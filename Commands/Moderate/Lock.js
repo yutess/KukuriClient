@@ -5,7 +5,11 @@ module.exports = {
     name: 'lock',
     description: 'Lock or unlock a channel',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['lockdown', 'unlock'],
+    cooldown: 5,
+    usage: '.lock [lock/unlock] [#channel]',
+    permissions: ['MANAGE_CHANNELS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

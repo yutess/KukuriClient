@@ -4,6 +4,10 @@ module.exports = {
     name: 'cal',
     description: 'Perform basic mathematical calculations',
     category: 'General',
+    aliases: ['calc', 'math'],
+    cooldown: 3,
+    usage: '.cal [number] [operator] [number]\nExample: .cal 5 + 3',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args, client) {
         if (args.length < 3) {
             return message.channel.send('Usage: .cal [number] [operator] [number]');

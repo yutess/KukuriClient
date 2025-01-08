@@ -2,6 +2,10 @@ module.exports = {
     name: 'slot',
     description: 'Play the slot machine',
     category: 'Fun',
+    aliases: ['slot'],
+    cooldown: 5,
+    usage: '.slot',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const slots = ['🍒', '🍋', '🍊', '🍉', '🍇', '🍓', '🍈'];
         const result = [

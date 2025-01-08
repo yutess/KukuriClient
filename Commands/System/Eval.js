@@ -6,8 +6,14 @@ const config = require(configPath);
 module.exports = {
     name: 'eval',
     description: '(DEBUG): Evaluates JavaScript code',
-    category: 'Admin',
-    async execute(message, args) {
+    category: 'System',
+    aliases: ['evaluate', 'debug'],
+    cooldown: 0,
+    usage: '.eval [code]',
+    permissions: ['ADMINISTRATOR'],
+    ownerOnly: true,
+    hidden: true,
+    execute: async (message, args, client) => {
         if (message.author.id !== config.GeneralSettings.OwnerID && 
             !config.BotSettings.BotAdmins.includes(message.author.id)) {
             return message.channel.send('You do not have permission to use this command.');

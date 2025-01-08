@@ -12,7 +12,11 @@ module.exports = {
     name: 'info',
     description: 'Display system and bot information',
     category: 'General',
-    async execute(message, args, client) {
+    aliases: ['botinfo', 'system'],
+    cooldown: 10,
+    usage: '.info',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         
         const currentTime = Date.now();
         

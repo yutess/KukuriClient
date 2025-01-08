@@ -5,6 +5,10 @@ module.exports = {
     name: 'commitmessage',
     description: 'Generate a random commit message',
     category: 'Fun',
+    aliases: ['cm'],
+    cooldown: 5,
+    usage: '.commitmessage',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const messageData = JSON.parse(
             readFileSync(path.join(__dirname, '../../data/Message.json'))

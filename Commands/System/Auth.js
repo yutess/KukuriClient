@@ -7,7 +7,12 @@ let config = require(configPath);
 module.exports = {
     name: 'auth',
     description: 'Add a user to BotAdmins',
-    category: 'Admin',
+    category: 'System',
+    aliases: ['addadmin', 'authorize'],
+    cooldown: 0,
+    usage: '.auth <@user/id>',
+    permissions: ['ADMINISTRATOR'],
+    ownerOnly: true,
     execute(message, args) {
         if (message.author.id !== config.GeneralSettings.OwnerID) {
             return message.channel.send('You do not have permission to use this command.');

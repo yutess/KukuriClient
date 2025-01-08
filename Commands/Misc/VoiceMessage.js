@@ -7,7 +7,7 @@ module.exports = {
     name: 'voicemsg', // example: .voicemsg C:\Users\<user>\Downloads\<voice>.mp3
     description: 'Send a voice message using an audio file',
     category: 'Misc',
-    async execute(message, args, client) {
+    execute: async (message, args, client) => {
         if (args.length < 1) {
             return message.channel.send('Please provide the path to the audio file. Usage: .voicemsg <filepath>');
         }

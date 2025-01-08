@@ -6,7 +6,12 @@ module.exports = {
     name: 'neko',
     description: 'Send a neko NSFW image',
     category: 'NSFW',
-    async execute(message, args, client) {
+    aliases: ['nekonsfw'],
+    cooldown: 5,
+    usage: '.neko',
+    permissions: ['SEND_MESSAGES', 'ATTACH_FILES'],
+    nsfw: true,
+    execute: async (message, args, client) => {
         try {
             if (!message.channel.nsfw && Config.GeneralSettings.EnableNSFW == false) {
                 return message.channel.send('This command can only be used in NSFW channels!');

@@ -5,7 +5,11 @@ module.exports = {
     name: 'nick',
     description: 'Manage user nicknames',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['nickname'],
+    cooldown: 5,
+    usage: '.nick <set/reset/random> <@user> [nickname]',
+    permissions: ['MANAGE_NICKNAMES'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

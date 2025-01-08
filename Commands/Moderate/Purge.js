@@ -5,7 +5,11 @@ module.exports = {
     name: 'purge',
     description: 'Purge a specific number of messages',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['prune', 'bulk'],
+    cooldown: 5,
+    usage: '.purge [amount]\nExample: .purge 50',
+    permissions: ['MANAGE_MESSAGES'],
+    execute: async (message, args, client) => {
         if (!args[0] || isNaN(args[0])) {
             return message.channel.send('Please provide a valid number of messages to purge.');
         }

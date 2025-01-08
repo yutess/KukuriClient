@@ -3,9 +3,13 @@ const Logger = require('../../Module/Logger');
 
 module.exports = {
     name: 'timeout',
-    description: 'Timeout a user for a specified duration',
+    description: 'Timeout a user for a specified duration', 
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['mute'],
+    cooldown: 5,
+    usage: '.timeout <@user> [duration] [reason]',
+    permissions: ['MODERATE_MEMBERS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

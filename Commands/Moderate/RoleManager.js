@@ -5,7 +5,11 @@ module.exports = {
     name: 'role',
     description: 'Manage server roles',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['roles', 'rolemanage'],
+    cooldown: 5,
+    usage: '.role <add/remove/create/delete/info> [@user] [@role]\nExample: .role add @user @role',
+    permissions: ['MANAGE_ROLES'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

@@ -5,6 +5,10 @@ module.exports = {
     name: 'trivia',
     description: 'Send a random trivia question',
     category: 'Fun',
+    aliases: ['question', 'quiz'],
+    cooldown: 5,
+    usage: '.trivia',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const messageData = JSON.parse(
             readFileSync(path.join(__dirname, '../../data/Message.json'))

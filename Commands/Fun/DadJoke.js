@@ -5,6 +5,10 @@ module.exports = {
     name: 'dadjoke',
     description: 'Send a random dad joke',
     category: 'Fun',
+    aliases: ['dad', 'badjoke'],
+    cooldown: 5,
+    usage: '.dadjoke',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const messageData = JSON.parse(
             readFileSync(path.join(__dirname, '../../data/Message.json'))

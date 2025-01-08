@@ -50,7 +50,7 @@ module.exports = {
         }
     },
 
-    async execute(message, args, client) {
+    execute: async (message, args, client) => {
         const dataDir = path.join(__dirname, '..', '..', 'data');
         const schedulePath = path.join(dataDir, 'schedules.json');
 

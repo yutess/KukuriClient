@@ -26,7 +26,11 @@ module.exports = {
     name: 'warn',
     description: 'Warn a user and manage warnings',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['warning'],
+    cooldown: 5,
+    usage: '.warn <@user> [reason]',
+    permissions: ['MODERATE_MEMBERS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

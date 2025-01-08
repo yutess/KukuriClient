@@ -5,7 +5,11 @@ module.exports = {
     name: 'unban',
     description: 'Unban a user from the server',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['pardon'],
+    cooldown: 5,
+    usage: '.unban [userID]\nExample: .unban 123456789',
+    permissions: ['BAN_MEMBERS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

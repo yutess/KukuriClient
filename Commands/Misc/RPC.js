@@ -2,9 +2,13 @@ const { Client, RichPresence, CustomStatus, SpotifyRPC } = require('discord.js-s
 
 module.exports = {
     name: 'rpc',
-    description: 'Set up Rich Presence interactively',
+    description: 'Set up Rich Presence',
     category: 'Misc',
-    async execute(message, args, client) {
+    aliases: ['richpresence', 'activity'],
+    cooldown: 10,
+    usage: '.rpc [type] [details...]',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         const filter = m => m.author.id === message.author.id;
         const collect = async (prompt) => {
             await message.channel.send(prompt);

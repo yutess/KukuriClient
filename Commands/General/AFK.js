@@ -9,6 +9,10 @@ module.exports = {
     name: 'afk',
     description: 'Toggle AFK mode',
     category: 'General',
+    aliases: ['away', 'brb'],
+    cooldown: 5,
+    usage: '.afk',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args, client) {
         const configPath = path.join(__dirname, '..', 'Config', 'Config.json');
         

@@ -4,7 +4,11 @@ module.exports = {
     name: 'userinfo',
     description: 'Get information about a user',
     category: 'Misc',
-    async execute(message, args, client) {
+    aliases: ['whois', 'user'],
+    cooldown: 5,
+    usage: '.userinfo [@user]',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         try {
             const mentionedUser = message.mentions.users.first() || message.author;
             const member = message.guild ? message.guild.members.cache.get(mentionedUser.id) : null;

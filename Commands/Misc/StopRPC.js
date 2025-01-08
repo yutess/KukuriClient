@@ -2,7 +2,7 @@ module.exports = {
     name: 'stoprpc',
     description: 'Stop all RPC activities',
     category: 'Misc',
-    async execute(message, args, client) {
+    execute: async (message, args, client) => {
         try {
             await client.user.setPresence({ activities: [] });
             message.channel.send('✅ Cleared all RPC activities successfully!');

@@ -7,7 +7,11 @@ module.exports = {
     name: 'unmute',
     description: 'Unmute a user by removing mute role',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['unsilence'],
+    cooldown: 5,
+    usage: '.unmute [@user]\nExample: .unmute @user',
+    permissions: ['MANAGE_ROLES'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

@@ -2,6 +2,10 @@ module.exports = {
     name: 'ermahgerd',
     description: 'Translate text to ERMAHGERD',
     category: 'Fun',
+    aliases: ['emh'],
+    cooldown: 5,
+    usage: '.ermahgerd',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const text = args.join(' ');
         const translated = text.replace(/[aeiou]/g, (match) => {

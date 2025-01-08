@@ -53,7 +53,10 @@ module.exports = {
     name: 'modlog',
     description: 'View and manage moderation history',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['modlogs', 'infractions'],
+    cooldown: 5,
+    usage: '.modlog <view/add/clear> <@user>',
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

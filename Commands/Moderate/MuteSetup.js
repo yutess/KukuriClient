@@ -7,7 +7,11 @@ module.exports = {
     name: 'mutesetup',
     description: 'Setup mute role ID',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['setupmute', 'setmuterole'],
+    cooldown: 5,
+    usage: '.mutesetup [Role ID]\nExample: .mutesetup 123456789',
+    permissions: ['MANAGE_ROLES'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

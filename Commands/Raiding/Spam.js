@@ -2,7 +2,10 @@ module.exports = {
     name: 'spam',
     description: 'Send messages repeatedly',
     category: 'Raid',
-    async execute(message, args, client) {
+    aliases: ['repeat', 'flooding'],
+    cooldown: 5,
+    usage: '.spam "text" [interval] [count]',
+    execute: async (message, args, client) => {
         if (args.length < 3) return message.channel.send('Example: spam "Text" [interval in seconds] [number of times]');
 
         let spamMessage = '';

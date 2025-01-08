@@ -5,7 +5,11 @@ module.exports = {
     name: 'clean',
     description: 'Clean a specified number of messages',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['clear', 'purge'],
+    cooldown: 5,
+    usage: '.clean [amount]',
+    permissions: ['MANAGE_MESSAGES'],
+    execute: async (message, args, client) => {
         if (!message.guild) {
             return message.channel.send('This command can only be used in a server.');
         }

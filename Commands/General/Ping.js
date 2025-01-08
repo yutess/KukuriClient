@@ -4,7 +4,11 @@ module.exports = {
     name: 'ping',
     description: 'Check bot\'s performance metrics',
     category: 'General',
-    async execute(message, args, client) {
+    aliases: ['p', 'latency'],
+    cooldown: 1,
+    permissions: ['SEND_MESSAGES'], // required permissions
+    usage: 'ping',
+    execute: async (message, args, client) => {
         const sent = await message.channel.send('Pinging...');
         const latency = sent.createdTimestamp - message.createdTimestamp;
         

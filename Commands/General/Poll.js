@@ -5,7 +5,11 @@ module.exports = {
     name: 'poll',
     description: 'Create a poll with multiple options',
     category: 'General',
-    async execute(message, args, client) {
+    aliases: ['vote', 'survey'],
+    cooldown: 30,
+    usage: '.poll "Question" "Option1" "Option2" ["Option3"...]\nExample: .poll "Favorite color?" "Red" "Blue" "Green"',
+    permissions: ['SEND_MESSAGES', 'ADD_REACTIONS'],
+    execute: async (message, args, client) => {
         try {
             if (!args.length) {
                 return message.channel.send('Please provide a question and options.\nUsage: .poll "Question" "Option1" "Option2" ["Option3" ...]');

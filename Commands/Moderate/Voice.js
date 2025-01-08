@@ -5,7 +5,18 @@ module.exports = {
     name: 'voice',
     description: 'Manage voice channels',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['vc'],
+    cooldown: 5,
+    usage: `.voice <action> [@user/#channel] [options]
+            Actions:
+            - mute @user
+            - unmute @user
+            - deafen @user
+            - undeafen @user
+            - disconnect @user
+            - limit #channel [limit]`,
+    permissions: ['MANAGE_CHANNELS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

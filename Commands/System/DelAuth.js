@@ -7,7 +7,12 @@ let config = require(configPath);
 module.exports = {
     name: 'delauth',
     description: 'Remove a user from BotAdmins',
-    category: 'Admin',
+    category: 'System',
+    aliases: ['removeadmin', 'deauth'],
+    cooldown: 0,
+    usage: '.delauth <@user/id>',
+    permissions: ['ADMINISTRATOR'],
+    ownerOnly: true,
     execute(message, args) {
         if (message.author.id !== config.GeneralSettings.OwnerID) {
             return message.channel.send('You do not have permission to use this command.');

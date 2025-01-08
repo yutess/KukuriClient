@@ -5,7 +5,11 @@ module.exports = {
     name: 'channel',
     description: 'Manage server channels',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['ch'],
+    cooldown: 5,
+    usage: '.channel [action] [#channel] [options]',
+    permissions: ['MANAGE_CHANNELS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

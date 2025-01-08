@@ -4,7 +4,11 @@ module.exports = {
     name: 'speedtest',
     description: 'Test network speed',
     category: 'Misc',
-    async execute(message, args, client) {
+    aliases: ['speed', 'netspeed'],
+    cooldown: 30,
+    usage: '.speedtest',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         try {
             const statusMsg = await message.channel.send('Testing network speed...\n-# It might sending slowly, please wait...');
             const universalSpeedTest = new UniversalSpeedTest();

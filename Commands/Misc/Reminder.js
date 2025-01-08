@@ -111,15 +111,19 @@ async function initializeReminders(client) {
 
 module.exports = {
     name: 'reminder',
-    description: 'Set a reminder with date, time and message',
+    description: 'Set a reminder',
     category: 'Misc',
+    aliases: ['remind', 'remindme'],
+    cooldown: 5,
+    usage: '.reminder <dd/mm/yy> <HH:MM> <message>',
+    permissions: ['SEND_MESSAGES'],
     
     // Initialize reminders
     async onReady(client) {
         await initializeReminders(client);
     },
     
-    async execute(message, args, client) {
+    execute: async (message, args, client) => {
         if (!config.NotificationSettings || !config.NotificationSettings.Enabled || !config.NotificationSettings.Webhook) {
             return message.channel.send('Reminder notifications are not configured. Please enable webhooks in config.');
         }

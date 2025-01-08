@@ -5,7 +5,11 @@ module.exports = {
     name: 'ban',
     description: 'Ban a user from the server',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['banuser'],
+    cooldown: 5,
+    usage: '.ban <@user/id> [reason]',
+    permissions: ['BAN_MEMBERS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

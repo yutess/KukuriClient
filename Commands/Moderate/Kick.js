@@ -5,7 +5,11 @@ module.exports = {
     name: 'kick',
     description: 'Kick a user from the server',
     category: 'Moderate',
-    async execute(message, args, client) {
+    aliases: ['kickuser'],
+    cooldown: 5,
+    usage: '.kick <@user/id> [reason]',
+    permissions: ['KICK_MEMBERS'],
+    execute: async (message, args, client) => {
         try {
             if (!message.guild) {
                 return message.channel.send('This command can only be used in a server');

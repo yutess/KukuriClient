@@ -4,7 +4,11 @@ module.exports = {
     name: 'message',
     description: 'Sending a normal message.',
     category: 'Fun',
-    async execute(message, args, client) {
+    aliases: ['gay'],
+    cooldown: 5,
+    usage: '.message [type] [message]',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         if (!args[0]) {
             message.delete();
             const reply = await message.channel.send('Plesae provide a number.\n1: Surveillance Message\n2: Child abuse\n3: Illegal investigation`');

@@ -2,7 +2,10 @@ module.exports = {
     name: 'massreact',
     description: 'Add reactions to multiple messages',
     category: 'Raid',
-    async execute(message, args, client) {
+    aliases: ['reactall', 'multireact'],
+    cooldown: 5,
+    usage: '.massreact <emoji>',
+    execute: async (message, args, client) => {
         if (!args[0]) return message.channel.send('Please provide an emoji');
         
         try {

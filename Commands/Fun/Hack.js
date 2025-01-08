@@ -2,7 +2,11 @@ module.exports = {
     name: 'hack',
     description: 'Fake hack a person',
     category: 'Fun',
-    async execute(message, args) {
+    aliases: ['fakehack'],
+    cooldown: 10,
+    usage: '.hack [@user]\nExample: .hack @username',
+    permissions: ['SEND_MESSAGES'],
+    execute: async (message, args, client) => {
         try {
             const user = message.mentions.users.first() || message.author;
 

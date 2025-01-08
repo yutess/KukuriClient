@@ -2,6 +2,10 @@ module.exports = {
     name: 'eightball',
     description: 'Ask the 8-Ball a question',
     category: 'Fun',
+    aliases: ['8ball', 'fortune'],
+    cooldown: 5,
+    usage: '.eightball [question]\nExample: .eightball Will I win the lottery?',
+    permissions: ['SEND_MESSAGES'],
     execute(message, args) {
         const responses = [
             'Yes', 'No', 'Maybe', 'Ask again later', 'Definitely', 'Absolutely not',

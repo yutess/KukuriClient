@@ -1,9 +1,13 @@
 const { WebEmbed } = require('discord.js-selfbot-v13');
 
 module.exports = {
-    name: 'fakeyt',
-    description: 'Faking the video',
-    category: 'Misc',
+    name: 'fakeyoutube',
+    description: 'Create fake YouTube video embed',
+    category: 'Misc', 
+    aliases: ['fakeyt', 'ytfake'],
+    cooldown: 5,
+    usage: '.fakeyoutube',
+    permissions: ['SEND_MESSAGES', 'EMBED_LINKS'],
     execute(message, args, client) {
         message.delete();
         const embed = new WebEmbed()
