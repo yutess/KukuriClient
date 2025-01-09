@@ -1,22 +1,25 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 class Logger {
     static instance = null;
-    
+    #logFile = null;
+    #savingLogs = true;
+    #logDir = path.join(__dirname, '..', 'Logs');
+
     constructor() {
-        this.logDir = path.join(__dirname, '..', 'logs');
-        this.currentLogFile = null;
         this.colors = {
             reset: "\x1b[0m",
-            info: "\x1b[36m",     // Cyan
-            warning: "\x1b[33m",   // Yellow  
-            error: "\x1b[31m",    // Red
-            debug: "\x1b[32m",    // Green
-            system: "\x1b[35m"    // Magenta
+            cyan: "\x1b[36m",    // INFO
+            yellow: "\x1b[33m",  // WARNING  
+            red: "\x1b[31m",     // EXPECTION
+            green: "\x1b[32m",   // DEBUG
+            magenta: "\x1b[35m"  // LOAD
         };
-
-        this.initializeLogger();
+        
+        if (this.#savingLogs) {
+            this.initializeLogFile();
+        }
     }
 
     static getInstance() {
@@ -26,60 +29,65 @@ class Logger {
         return Logger.instance;
     }
 
-    async initializeLogger() {
-        try {
-            await fs.access(this.logDir);
-        } catch {
-            await fs.mkdir(this.logDir, { recursive: true });
+    initializeLogFile() {
+        if (!fs.existsSync(this.#logDir)) {
+            fs.mkdirSync(this.#logDir, { recursive: true });
         }
 
-        const date = new Date();
-        const fileName = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}.log`;
-        this.currentLogFile = path.join(this.logDir, fileName);
-    }
-
-    getFormattedTime() {
         const now = new Date();
-        return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        const filename = path.join(
+            this.#logDir, 
+            `Log_${now.getDate()}-${months[now.getMonth()]}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}.kukuri`
+        );
+        this.#logFile = filename;
     }
 
-    async writeToFile(level, message) {
-        const logEntry = `[${this.getFormattedTime()}] [${level.toUpperCase()}] ${message}\n`;
-        try {
-            await fs.appendFile(this.currentLogFile, logEntry);
-        } catch (error) {
-            console.error('Failed to write to log file:', error);
+    async log(level, message) {
+        const timeStr = new Date().toLocaleTimeString();
+        const color = {
+            'INFO': this.colors.cyan,
+            'WARNING': this.colors.yellow,
+            'EXPECTION': this.colors.red,
+            'DEBUG': this.colors.green,
+            'LOAD': this.colors.magenta
+        }[level] || this.colors.reset;
+
+        console.log(`${color}[${level}]${this.colors.reset} (${timeStr}): ${message}`);
+
+        if (this.#savingLogs && this.#logFile) {
+            const logEntry = `[${timeStr}] [${level}] ${message}\n`;
+            try {
+                fs.appendFileSync(this.#logFile, logEntry);
+            } catch (error) {
+                console.error('Failed to write to log file:', error);
+            }
         }
     }
 
-    log(level, message, color) {
-        const timeStr = this.getFormattedTime();
-        const logMessage = `${color}[${level}]${this.colors.reset} (${timeStr}): ${message}`;
-        
-        console.log(logMessage);
-        this.writeToFile(level, message);
+    static info(message) {
+        Logger.getInstance().log('INFO', message);
     }
 
-    info(message) {
-        this.log('INFO', message, this.colors.info);
+    static warning(message) {
+        Logger.getInstance().log('WARNING', message);
     }
 
-    warning(message) {
-        this.log('WARNING', message, this.colors.warning);
+    static expection(message) {
+        Logger.getInstance().log('EXPECTION', message);
     }
 
-    error(message, error = null) {
-        const errorMsg = error ? `${message} - ${error.stack || error.message}` : message;
-        this.log('ERROR', errorMsg, this.colors.error);
+    static debug(message) {
+        Logger.getInstance().log('DEBUG', message);
     }
 
-    debug(message) {
-        this.log('DEBUG', message, this.colors.debug);
-    }
-
-    system(message) {
-        this.log('SYSTEM', message, this.colors.system);
+    static load(message) {
+        Logger.getInstance().log('LOAD', message);
     }
 }
 
-module.exports = Logger.getInstance();
+module.exports = Logger;
