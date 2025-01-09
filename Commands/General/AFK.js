@@ -3,7 +3,6 @@ const path = require('path');
 const { WebhookClient } = require('discord.js-selfbot-v13');
 const Logger = require('../../Module/Logger');
 
-// Better handling than before
 class AFKManager {
     constructor() {
         this.configPath = path.join(__dirname, '..', '..', 'Config', 'Config.json');
@@ -11,6 +10,7 @@ class AFKManager {
         this.isAfk = false;
         this.startTime = null;
         this.reason = '';
+        this.recentResponses = new Map(); // Map
     }
 
     toggleAFK(reason = '') {
@@ -21,9 +21,9 @@ class AFKManager {
         } else {
             this.startTime = null;
             this.reason = '';
+            this.recentResponses.clear(); // Clear when disable AFK
         }
         
-        // Update config
         this.config.Commands.AFK.afk = this.isAfk;
         this.config.Commands.AFK.reason = this.reason;
         this.config.Commands.AFK.startTime = this.startTime;
@@ -41,6 +41,19 @@ class AFKManager {
         if (hours > 0) return `${hours}h ${minutes % 60}m`;
         if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
         return `${seconds}s`;
+    }
+
+    formatResponse() {
+        const randomResponse = this.getRandomResponse();
+        const duration = this.getAfkDuration();
+        const components = [randomResponse];
+        
+        if (this.reason) {
+            components.push(`Reason: ${this.reason}`);
+        }
+        components.push(`-# AFK duration: ${duration} ago`);
+        
+        return components.join('\n');
     }
 
     getRandomResponse() {
@@ -69,15 +82,26 @@ class AFKManager {
                 `Channel: ${message.channel.type === 'DM' ? 'Direct Message' : message.channel.name}`,
                 `Message: ${message.content}`,
                 `Response: ${response}`,
-                `AFK Duration: ${this.getAfkDuration()}`,
-                this.reason ? `AFK Reason: ${this.reason}` : '',
                 '```'
-            ].filter(Boolean).join('\n');
+            ].join('\n');
 
             await webhook.send({ content });
         } catch (error) {
             Logger.expection(`Failed to send webhook notification: ${error.message}`);
         }
+    }
+
+    shouldRespond(userId, channelId) { // Check for reply
+        const key = `${userId}-${channelId}`;
+        const now = Date.now();
+        const lastResponse = this.recentResponses.get(key);
+
+        if (!lastResponse || (now - lastResponse) > 60000) { // If doesnt reply or reply 1 min ago
+            this.recentResponses.set(key, now);
+            return true;
+        }
+
+        return false;
     }
 }
 
@@ -87,14 +111,13 @@ module.exports = {
     name: 'afk',
     description: 'Toggle AFK mode with optional reason',
     category: 'General',
-    usage: '.afk | .afk [reason]',
     execute(message, args, client) {
         const reason = args.join(' ');
         manager.toggleAFK(reason);
 
         const status = manager.isAfk ? 'enabled' : 'disabled';
         const reasonText = reason ? ` with reason: ${reason}` : '';
-        message.channel.send(`AFK mode has been ${status}${reasonText}.`);
+        message.channel.send(`AFK mode has been ${status}${reasonText}`);
     },
     init(client) {
         client.on('messageCreate', async (message) => {
@@ -102,13 +125,10 @@ module.exports = {
             if (message.author.id === client.user.id) return;
             if (message.content.includes('@everyone') || message.content.includes('@here')) return;
 
-            // Check if mentioned or DM
-            if (message.channel.type === 'DM' || message.mentions.users.has(client.user.id)) {
-                const response = [
-                    manager.getRandomResponse(),
-                    `\n-# AFK for: ${manager.getAfkDuration()} ago`,
-                    manager.reason ? `\nReason: ${manager.reason}` : ''
-                ].filter(Boolean).join('');
+            if (message.channel.type === 'DM' || message.mentions.users.has(client.user.id)) { // Check if mentioned or DM
+                if (!manager.shouldRespond(message.author.id, message.channel.id)) return; // Check for reply
+
+                const response = manager.formatResponse();
 
                 try {
                     await message.channel.send(response);
