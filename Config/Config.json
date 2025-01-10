@@ -20,12 +20,13 @@
         "EnableDelete": false
     },
     "NotificationSettings": {
-        "Enabled": false,
+        "Enabled": true,
         "Webhook": ""
     },
     "CryptoSettings": {
         "Enabled": true,
         "WalletAddresses": {
+            "You can delete this line": "This is Kukuri's Crypto address.",
             "BTC": "1JpP51gP9gtcmNavmWZHieSy1pibajf78C",
             "ETH": "0x7e1751760344850a4c65266486dc994dd2a3bf4c",
             "LTC": "LKKTawdjjeWa8KNd18C82xt1YRDKWGDFEY"
@@ -46,14 +47,14 @@
         },
         "AFK": {
             "afk": false,
+            "reason": "",
+            "startTime": null,
             "afkKeywords": [
-                "What's up? I'm afk, Will be back soon!",
-                "This is an auto message, I'm currently afk.",
+                "Hey~ This is an auto message, Im currently afk!",
+                "I will be right back, Im afk right now",
                 "Wait a min, I'm afk",
                 "What, wait a sec",
-                "yo wait I'm afk dude",
-                "this is an auto msg, I'm afk",
-                "afk",
+                "Auto message: Im afk",
                 "I'm afk, will be back soon!"
             ]
         }
