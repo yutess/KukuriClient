@@ -23,6 +23,7 @@ module.exports = {
             try {
                 targetUser = await client.users.fetch(args[0]);
             } catch (error) {
+                Logger.expection('Invalid user ID or mention');
                 return message.channel.send('Invalid user ID or mention.');
             }
         }
@@ -107,7 +108,7 @@ module.exports = {
                     `Progress: ${progress}%`,
                     `Messages Sent: ${sent}/${count}`,
                     `Failed: ${failed}`,
-                `Anti-Captcha: ${config.CaptchaSettings?.Enabled ? 'Enabled' : 'Disabled'}`,
+                    `Anti-Captcha: ${config.CaptchaSettings?.Enabled ? 'Enabled' : 'Disabled'}`,
                     '',
                     'Type "stopdm" to stop'
                 ].join('\n'));

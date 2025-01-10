@@ -1,4 +1,3 @@
-const Settings = require("../../Config/Settings.json");
 const Config = require("../../Config/Config.json");
 
 module.exports = {
@@ -9,16 +8,16 @@ module.exports = {
     cooldown: 3,
     usage: '.help [category]',
     permissions: ['SEND_MESSAGES'],
-    execute: async (message, args, client) => {
+    execute: async (message, args) => {
         try {
             const prefix = Config.BotSettings.Prefix;
             const categories = new Map();
             
-            // Get commands directly from commandHandler
-            const commands = message.client.commandHandler.getCommands();
+            // Get commands from the client's commands collection
+            const commands = Array.from(message.client.commands.values());
             
             // Sort commands by category
-            for (const [, command] of commands) {
+            for (const command of commands) {
                 if (command.hidden) continue;
                 
                 const category = command.category || 'Uncategorized';
@@ -44,7 +43,7 @@ module.exports = {
                 if (categories.has(requestedCategory)) {
                     helpMessage += `\n== ${requestedCategory} ==\n`;
                     categories.get(requestedCategory).forEach(cmd => {
-                        helpMessage += `${cmd.name} - ${cmd.description}\n`;
+                        helpMessage += `${prefix}${cmd.name} - ${cmd.description}\n`;
                     });
                 } else {
                     helpMessage += 'Category not found!';
