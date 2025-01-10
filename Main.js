@@ -9,7 +9,7 @@ class ClientManager {
         this.client = new Client({
             checkUpdate: false
         });
-        this.commands = new Map();
+        this.client.commands = new Map();
     }
 
     async initialize() {
@@ -53,7 +53,7 @@ class ClientManager {
             } else if (item.endsWith('.js')) {
                 try {
                     const command = require(itemPath);
-                    this.commands.set(command.name, command);
+                    this.client.commands.set(command.name, command);
                     if (Config.GeneralSettings.ShowLoadCommands) {
                         Logger.info(`Loaded command: ${command.name}`);
                     }
@@ -81,19 +81,28 @@ class ClientManager {
     }
 
     async handleMessage(message) {
-        if (!message.content.startsWith(Config.BotSettings.Prefix)) return;
-
-        const args = message.content.slice(Config.BotSettings.Prefix.length).trim().split(/ +/);
-        const commandName = args.shift().toLowerCase();
-        const command = this.commands.get(commandName);
-
-        if (!command) return;
-
+        let commandName = '';
+        
         try {
+            if (!message.content.startsWith(Config.BotSettings.Prefix)) return;
+    
+            const args = message.content.slice(Config.BotSettings.Prefix.length).trim().split(/ +/);
+            commandName = args.shift().toLowerCase();
+            const command = this.client.commands.get(commandName);
+    
+            if (!command) return;
+    
+            // Initialize AFK command
+            if (commandName === 'afk' && typeof command.init === 'function') {
+                command.init(this.client);
+            }
+    
             await command.execute(message, args, this.client);
         } catch (error) {
             Logger.expection(`Error executing command ${commandName}: ${error.message}`);
-            message.channel.send('An error occurred while executing the command.');
+            if (message?.channel?.send) {
+                await message.channel.send('An error occurred while executing the command.').catch(() => {});
+            }
         }
     }
 

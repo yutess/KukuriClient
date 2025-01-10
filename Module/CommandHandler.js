@@ -17,7 +17,7 @@ class CommandHandler {
             await this.loadCommandsRecursive(baseDir);
             Logger.info(`Successfully loaded ${this.commands.size} commands`);
         } catch (error) {
-            Logger.error(`Failed to load commands: ${error.message}`);
+            Logger.expection(`Failed to load commands: ${error.message}`);
         }
     }
 
@@ -37,7 +37,7 @@ class CommandHandler {
                         this.registerCommand(command);
                     }
                 } catch (error) {
-                    Logger.error(`Error loading command ${item}: ${error.message}`);
+                    Logger.expection(`Error loading command ${item}: ${error.message}`);
                 }
             }
         }
@@ -89,7 +89,7 @@ class CommandHandler {
         try {
             await this.executeCommand(command, message, args);
         } catch (error) {
-            Logger.error(`Error executing command ${commandName}: ${error.message}`);
+            Logger.expection(`Error executing command ${commandName}: ${error.message}`);
             message.channel.send('An error occurred while executing the command.');
         }
     }

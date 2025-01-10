@@ -1,36 +1,81 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
+const Logger = require('./Logger');
 
-const Packages = {
-    "@distube/ytdl-core": "4.15.8",
-    "axios": "1.7.7",
-    "discord.js-selfbot-v13": "3.4.6",
-    "express": "4.21.1",
-    "node-notifier": "10.0.1",
-    "sharp": "0.33.5",
-    "systeminformation": "5.23.25",
-    "universal-speedtest": "3.0.0",
-    "ytdl-core": "4.11.5"
-};
+class Installer {
+    constructor() {
+        this.requiredDirs = ['Commands', 'Config', 'data', 'Logs'];
+    }
 
-function Install() {
-    console.log('Checking packages...');
-    
-    for (const [packageName, version] of Object.entries(Packages)) {
-        try {
-            require(packageName);
-            console.log(`> ${packageName} is already installed`);
-        } catch (error) {
-            console.log(`+ Installing ${packageName}@${version}...`);
-            try {
-                execSync(`npm install ${packageName}@${version}`, { stdio: 'inherit' });
-                console.log(`- ${packageName} installed successfully`);
-            } catch (installError) {
-                console.error(`❌ Failed to install ${packageName}: ${installError.message}`);
+    async createDirectories() {
+        for (const dir of this.requiredDirs) {
+            const dirPath = path.join(__dirname, '..', dir);
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath, { recursive: true });
             }
+        }
+    }
+
+    async installPackages() {
+        try {
+            execSync('bun install', {
+                stdio: 'ignore',
+                cwd: path.join(__dirname, '..')
+            });
+            return true;
+        } catch (error) {
+            Logger.expection(`Failed to install packages: ${error.message}`);
+            return false;
+        }
+    }
+
+    async createDefaultConfig() {
+        const configPath = path.join(__dirname, '..', 'Config', 'Config.json');
+        if (!fs.existsSync(configPath)) {
+            const defaultConfig = {
+                BotSettings: {
+                    Token: "",
+                    Prefix: ".",
+                    BotAdmins: []
+                },
+                GeneralSettings: {
+                    OwnerID: "",
+                    ShowLoadCommands: false,
+                    EnableNSFW: false
+                },
+                NotificationSettings: {
+                    Enabled: false,
+                    Webhook: ""
+                }
+            };
+            fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));
+        }
+    }
+
+    async start() {
+        console.clear();
+        Logger.info('Installing Kukuri Client...');
+
+        try {
+            await this.createDirectories();
+            if (!await this.installPackages()) {
+                return;
+            }
+            await this.createDefaultConfig();
+
+            Logger.info('Installation completed!');
+            Logger.info('Run "bun Module/Setup.js" to configure your bot');
+
+        } catch (error) {
+            Logger.expection(`Installation failed: ${error.message}`);
         }
     }
 }
 
-// Run the check and installation
-Install();
+if (require.main === module) {
+    const installer = new Installer();
+    installer.start();
+}
+
+module.exports = Installer;
